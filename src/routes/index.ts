@@ -20,6 +20,7 @@ import swaggerUi from 'swagger-ui-express';
 import uploadConfig from '../config/upload';
 import * as CatalogController from '../controller/catalogController';
 import * as CommunityController from '../controller/communityController';
+import ContactController from '../controller/contactController';
 import * as DeviceController from '../controller/deviceController';
 import { encryptSession } from '../controller/encryptController';
 import * as GroupController from '../controller/groupController';
@@ -36,7 +37,7 @@ import * as prometheusRegister from '../middleware/instrumentation';
 import statusConnection from '../middleware/statusConnection';
 import swaggerDocument from '../swagger.json';
 
-const upload = multer(uploadConfig as any);
+const upload = multer(uploadConfig as any) as any;
 const routes: Router = Router();
 
 // Generate Token
@@ -94,6 +95,11 @@ routes.post(
   '/api/:session/subscribe-presence',
   verifyToken,
   SessionController.subscribePresence
+);
+routes.post(
+  '/api/:session/set-online-presence',
+  verifyToken,
+  SessionController.setOnlinePresence
 );
 routes.post(
   '/api/:session/download-media',
@@ -220,6 +226,12 @@ routes.post(
   statusConnection,
   MessageController.sendPollMessage
 );
+routes.post(
+  '/api/:session/send-pix-key',
+  verifyToken,
+  statusConnection,
+  MessageController.sendPixMessage
+);
 
 // Group
 routes.get(
@@ -251,6 +263,12 @@ routes.get(
   verifyToken,
   statusConnection,
   GroupController.getGroupAdmins
+);
+routes.get(
+  '/api/:session/group-info/:groupId',
+  verifyToken,
+  statusConnection,
+  GroupController.getGroupInfo
 );
 routes.get(
   '/api/:session/group-invite-link/:groupId',
@@ -748,6 +766,12 @@ routes.get(
   DeviceController.getContact
 );
 routes.get(
+  '/api/:session/contact/pn-lid/:pnLid',
+  verifyToken,
+  statusConnection,
+  ContactController.getContactPnLid
+);
+routes.get(
   '/api/:session/profile/:phone',
   verifyToken,
   statusConnection,
@@ -932,8 +956,8 @@ routes.post(
 routes.post('/api/:session/chatwoot', DeviceController.chatWoot);
 
 // Api Doc
-routes.use('/api-docs', swaggerUi.serve);
-routes.get('/api-docs', swaggerUi.setup(swaggerDocument));
+routes.use('/api-docs', swaggerUi.serve as any);
+routes.get('/api-docs', swaggerUi.setup(swaggerDocument) as any);
 
 //k8s
 routes.get('/healthz', HealthCheck.healthz);

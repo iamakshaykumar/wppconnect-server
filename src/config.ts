@@ -57,6 +57,8 @@ export default {
       '--disable-default-apps',
       '--disable-extensions',
       '--disable-sync',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
       '--disable-translate',
       '--hide-scrollbars',
       '--metrics-recording-only',
@@ -76,6 +78,11 @@ export default {
      * linkPreviewApiServers: [ 'https://www.yourserver.com/wa-js-api-server' ]
      */
     linkPreviewApiServers: null,
+
+    /**
+     * Set specific whatsapp version
+     */
+    // whatsappVersion: '2.xxxxx',
   },
   mapper: {
     enable: false,
